@@ -2,10 +2,8 @@ using System;
 using Lean.Touch;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
-    private Vector2 _touchStartPos;
-
     private void Start()
     {
         ToggleInput(true);
@@ -19,24 +17,25 @@ public class PlayerController : MonoBehaviour
             LeanTouch.OnFingerUp += OnFingerUp;
             LeanTouch.OnFingerUpdate += OnFingerUpdate;
         }
-        else LeanTouch.OnFingerUpdate -= OnFingerUpdate;
+        else
+        {
+            LeanTouch.OnFingerDown -= OnFingerDown;
+            LeanTouch.OnFingerUp -= OnFingerUp;
+            LeanTouch.OnFingerUpdate -= OnFingerUpdate;
+        }
     }
     
     private void OnFingerDown(LeanFinger finger)
     {
-        Debug.Log("Finger Down");
-        // init guide system
     }
     
     private void OnFingerUp(LeanFinger finger)
     {
-        Debug.Log("Finger Up");
-        _touchStartPos = finger.ScreenPosition;
     }
     
     private void OnFingerUpdate(LeanFinger finger)
     {
-        Debug.Log("Finger Update");
+        PlayerAimManager.Instance.StepAimGuide(finger);
     }
     
     
