@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class PlayerAimManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private static PlayerAimManager _instance;
 
-    // Update is called once per frame
-    void Update()
+    private PlayerAimManager()
     {
-        
+        _instance = this;
+    }
+    
+    public static PlayerAimManager GetInstance()
+    {
+        return _instance;
+    }
+    
+    public void StepAimGuide()
+    {
+        Debug.Log("StepGuide");
     }
 }
