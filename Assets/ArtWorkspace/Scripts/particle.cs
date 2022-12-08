@@ -48,4 +48,5 @@ public class particle : MonoBehaviour
     {
         //DOTween.To(x => alpha = x, alpha, 0 ,0.4f);
     }
+    
 }
