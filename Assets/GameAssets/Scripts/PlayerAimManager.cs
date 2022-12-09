@@ -38,6 +38,7 @@ public class PlayerAimManager : MonoBehaviour
 
             var renderer = go.AddComponent<SpriteRenderer>();
             renderer.sprite = indicatorSprite;
+            renderer.sortingOrder = 1;
             
             _indicators.Add(go);
         }
