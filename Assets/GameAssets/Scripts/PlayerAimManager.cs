@@ -60,12 +60,9 @@ public class PlayerAimManager : MonoBehaviour
         var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
         var fingerForceRatio = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * screenRateMaxForce), 0, 1);
         
-        var force = minForce + (maxForce - minForce) * fingerForceRatio;
-
         if (fingerForceRatio < maxIndicatorOpacityRate)
         {
             var opacityRatio = Mathf.Clamp(fingerForceRatio - minIndicatorOpacityRate, .0f, maxIndicatorOpacityRate - minIndicatorOpacityRate) / (maxIndicatorOpacityRate - minIndicatorOpacityRate);
-            print(opacityRatio + " " + fingerForceRatio);
             
             foreach (var indicator in _indicators)
             {
@@ -78,9 +75,10 @@ public class PlayerAimManager : MonoBehaviour
         
         //
         
-        var guideDir = -fingerDeltaPos.normalized;
-
-        var currentPos = (Vector2)_player.transform.position;
+        var currentPlayerPos = (Vector2)_player.transform.position;
+        
+        var forceMagnitude = minForce + (maxForce - minForce) * fingerForceRatio;
+        var force = -fingerDeltaPos.normalized * forceMagnitude;
 
         for (var index = 0; index < _indicators.Count; index++)
         {
@@ -88,10 +86,27 @@ public class PlayerAimManager : MonoBehaviour
             
             var time = index * indicatorTimeInterval;
 
-            var spaceVelocity = guideDir * (force * Time.fixedDeltaTime);
+            var spaceVelocity = force * Time.fixedDeltaTime;
             var finalVelocity = spaceVelocity + Physics2D.gravity * time;
-            var futurePosition = finalVelocity * time + currentPos;
-            indicator.transform.position = futurePosition;
+            var futurePosition = finalVelocity * time + currentPlayerPos;
+
+            // Out of screen indicator reflection 
+            var screenPos = Camera.main.WorldToScreenPoint(futurePosition);
+            if (screenPos.x < 0)
+            {
+                indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(-screenPos.x, screenPos.y));
+            }
+            else if (screenPos.x > Screen.width)
+            {
+                var reflectedScreenPosX = Screen.width - (screenPos.x - Screen.width);
+                indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(reflectedScreenPosX, screenPos.y));
+            }
+            else
+            {
+                indicator.transform.position = futurePosition;
+            }
+            
+            print(screenPos.x);
         }
     }
     
