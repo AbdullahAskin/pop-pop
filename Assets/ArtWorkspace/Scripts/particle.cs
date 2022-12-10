@@ -27,8 +27,8 @@ public class particle : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         rb.AddTorque(1f);
-        randomX = Random.Range(-8f,8f);
-        randomY = Random.Range(-10f, 20f);
+        randomX = Random.Range(-22f,22f);
+        randomY = Random.Range(-22f, 22f);
         Throw();
         randomColorIndex = Random.Range(0, 3);
         sr.color = particleColors[randomColorIndex];
