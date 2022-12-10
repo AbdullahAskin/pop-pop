@@ -105,8 +105,6 @@ public class PlayerAimManager : MonoBehaviour
             {
                 indicator.transform.position = futurePosition;
             }
-            
-            print(screenPos.x);
         }
     }
     
