@@ -333,8 +333,9 @@ MonoBehaviour:
   indicatorSprite: {fileID: 21300000, guid: 9150d7e95bbb6664f9003b200188f544, type: 3}
   indicatorScaleLimits: {x: 0.1, y: 0.05}
   indicatorGap: 0.6
-  indicatorGapScaleRate: 0.85
   indicatorCount: 10
+  maxForce: 0
+  indicatorTimeInterval: 0
 --- !u!4 &264987369
 Transform:
   m_ObjectHideFlags: 0
