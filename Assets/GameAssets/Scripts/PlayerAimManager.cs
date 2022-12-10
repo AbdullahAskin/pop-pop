@@ -8,11 +8,20 @@ using Vector2 = UnityEngine.Vector2;
 public class PlayerAimManager : MonoBehaviour
 {
     [SerializeField] private Sprite indicatorSprite;
-    [SerializeField] private Vector2 indicatorScaleLimits;
-    [SerializeField] private int indicatorCount;
-    [SerializeField] private float maxForce;
-    [SerializeField] private float indicatorTimeInterval;
+    
+    [SerializeField] private float minIndicatorScale;
+    [SerializeField] private float maxIndicatorScale;
+    
+    [SerializeField] private float minIndicatorOpacityRate;
+    [SerializeField] private float maxIndicatorOpacityRate;
 
+    [SerializeField] private int indicatorCount;
+    [SerializeField] private float indicatorTimeInterval;
+    
+    [SerializeField] private float minForce;
+    [SerializeField] private float maxForce;
+    [SerializeField] private float screenRateMaxForce;
+    
     private List<GameObject> _indicators = new List<GameObject>();
     private Player _player;
     
@@ -27,10 +36,10 @@ public class PlayerAimManager : MonoBehaviour
         
         //
 
-        for (var index = 0; index < indicatorCount; index++)
+        for (var index = indicatorCount; index > 0; index--)
         {
-            var scale  = indicatorScaleLimits.x + (indicatorScaleLimits.y - indicatorScaleLimits.x) * index / indicatorCount;
-            var go = new GameObject("indicator" + index)
+            var scale  = minIndicatorScale + (maxIndicatorScale - minIndicatorScale) * index / indicatorCount;
+            var go = new GameObject("indicator" + index + " - "+ scale)
             {
                 transform =
                 {
@@ -48,7 +57,28 @@ public class PlayerAimManager : MonoBehaviour
     
     public void StepAimGuide(LeanFinger finger)
     {
-        var guideDir = -(finger.ScreenPosition - finger.StartScreenPosition).normalized;
+        var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
+        var fingerForceRatio = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * screenRateMaxForce), 0, 1);
+        
+        var force = minForce + (maxForce - minForce) * fingerForceRatio;
+
+        if (fingerForceRatio < maxIndicatorOpacityRate)
+        {
+            var opacityRatio = Mathf.Clamp(fingerForceRatio - minIndicatorOpacityRate, .0f, maxIndicatorOpacityRate - minIndicatorOpacityRate) / (maxIndicatorOpacityRate - minIndicatorOpacityRate);
+            print(opacityRatio + " " + fingerForceRatio);
+            
+            foreach (var indicator in _indicators)
+            {
+                var spriteRenderer = indicator.GetComponent<SpriteRenderer>();
+                var spriteColor = spriteRenderer.color;
+                spriteColor.a = opacityRatio;
+                spriteRenderer.color = spriteColor;
+            }
+        }
+        
+        //
+        
+        var guideDir = -fingerDeltaPos.normalized;
 
         var currentPos = (Vector2)_player.transform.position;
 
@@ -58,18 +88,10 @@ public class PlayerAimManager : MonoBehaviour
             
             var time = index * indicatorTimeInterval;
 
-            // Calculate the initial velocity of the object
-            var initialVelocity = guideDir * (maxForce * Time.fixedDeltaTime);
-
-            // Calculate the final velocity of the object after time has elapsed
-            var finalVelocity = initialVelocity + Physics2D.gravity * time;
-
-            // Calculate the future position of the object
+            var spaceVelocity = guideDir * (force * Time.fixedDeltaTime);
+            var finalVelocity = spaceVelocity + Physics2D.gravity * time;
             var futurePosition = finalVelocity * time + currentPos;
-
-            // Update the position of the indicator object
             indicator.transform.position = futurePosition;
-
         }
     }
     

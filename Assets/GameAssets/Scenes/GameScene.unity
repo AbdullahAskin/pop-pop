@@ -331,11 +331,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indicatorSprite: {fileID: 21300000, guid: 9150d7e95bbb6664f9003b200188f544, type: 3}
-  indicatorScaleLimits: {x: 0.1, y: 0.05}
-  indicatorGap: 0.6
+  minIndicatorScale: 0.05
+  maxIndicatorScale: 0.1
+  minIndicatorOpacityRate: 0.1
+  maxIndicatorOpacityRate: 0.4
   indicatorCount: 10
-  maxForce: 0
-  indicatorTimeInterval: 0
+  indicatorTimeInterval: 0.1
+  minForce: 200
+  maxForce: 500
+  screenRateMaxForce: 0.35
 --- !u!4 &264987369
 Transform:
   m_ObjectHideFlags: 0
