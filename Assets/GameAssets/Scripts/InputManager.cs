@@ -27,10 +27,12 @@ public class InputManager : MonoBehaviour
     
     private void OnFingerDown(LeanFinger finger)
     {
+        PlayerAimManager.Instance.ToggleIndicators(true);
     }
     
     private void OnFingerUp(LeanFinger finger)
-    {
+    {   
+        PlayerAimManager.Instance.ToggleIndicators(false);
     }
     
     private void OnFingerUpdate(LeanFinger finger)
