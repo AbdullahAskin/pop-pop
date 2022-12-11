@@ -22,7 +22,7 @@ public class PlayerAimManager : MonoBehaviour
     [SerializeField] private float maxForce;
     [SerializeField] private float screenRateMaxForce;
     
-    private List<GameObject> _indicators = new List<GameObject>();
+    private readonly List<SpriteRenderer> _indicatorRenderers = new List<SpriteRenderer>();
     private Player _player;
     
     private PlayerAimManager()
@@ -34,57 +34,71 @@ public class PlayerAimManager : MonoBehaviour
     {
         _player = FindObjectOfType<Player>();
         
-        //
-
-        for (var index = indicatorCount; index > 0; index--)
-        {
-            var scale  = minIndicatorScale + (maxIndicatorScale - minIndicatorScale) * index / indicatorCount;
-            var go = new GameObject("indicator" + index + " - "+ scale)
-            {
-                transform =
-                {
-                    localScale = Vector2.one * scale
-                }
-            };
-
-            var renderer = go.AddComponent<SpriteRenderer>();
-            renderer.sprite = indicatorSprite;
-            renderer.sortingOrder = 1;
-            
-            _indicators.Add(go);
-        }
+        CreateIndicators();
     }
     
+    void CreateIndicators()
+    {
+        // Create a GameObject for each indicator
+        for (var index = indicatorCount; index > 0; index--)
+        {
+            // Calculate the scale for the current indicator
+            var scale = minIndicatorScale + (maxIndicatorScale - minIndicatorScale) * index / indicatorCount;
+
+            // Create the GameObject and set its scale
+            var go = new GameObject("indicator" + index + " - "+ scale);
+            go.transform.localScale = Vector2.one * scale;
+
+            // Add a SpriteRenderer and set its sprite and sorting order
+            var spriteRenderer = go.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = indicatorSprite;
+            spriteRenderer.sortingOrder = 1;
+            spriteRenderer.enabled = false;
+
+            // Add the SpriteRenderer to the list of indicator renderers
+            _indicatorRenderers.Add(spriteRenderer);
+        }
+    }
+
+    public void ToggleIndicators(bool bind)
+    {
+        foreach (var indicatorRenderer in _indicatorRenderers)
+        {
+            indicatorRenderer.enabled = bind;
+        }
+    }
+
     public void StepAimGuide(LeanFinger finger)
     {
         var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
         var fingerForceRatio = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * screenRateMaxForce), 0, 1);
         
+        // Set indicators opacity
         if (fingerForceRatio < maxIndicatorOpacityRate)
         {
-            var opacityRatio = Mathf.Clamp(fingerForceRatio - minIndicatorOpacityRate, .0f, maxIndicatorOpacityRate - minIndicatorOpacityRate) / (maxIndicatorOpacityRate - minIndicatorOpacityRate);
-            
-            foreach (var indicator in _indicators)
-            {
-                var spriteRenderer = indicator.GetComponent<SpriteRenderer>();
-                var spriteColor = spriteRenderer.color;
-                spriteColor.a = opacityRatio;
-                spriteRenderer.color = spriteColor;
-            }
+            var opacityRatio =
+                Mathf.Clamp(fingerForceRatio - minIndicatorOpacityRate, .0f,
+                    maxIndicatorOpacityRate - minIndicatorOpacityRate) /
+                (maxIndicatorOpacityRate - minIndicatorOpacityRate);
+
+            SetIndicatorsOpacity(opacityRatio);
+        }
+        else
+        {
+            SetIndicatorsOpacity(1);
         }
         
-        //
-        
+        // Predict indicator positions
         var currentPlayerPos = (Vector2)_player.transform.position;
         
         var forceMagnitude = minForce + (maxForce - minForce) * fingerForceRatio;
         var force = -fingerDeltaPos.normalized * forceMagnitude;
 
-        for (var index = 0; index < _indicators.Count; index++)
+        for (var index = 0; index < _indicatorRenderers.Count; index++)
         {
-            var indicator = _indicators[index];
+            var indicator = _indicatorRenderers[index];
             
-            var time = index * indicatorTimeInterval;
+            var time = (index + 1.5f) * indicatorTimeInterval;
 
             var spaceVelocity = force * Time.fixedDeltaTime;
             var finalVelocity = spaceVelocity + Physics2D.gravity * time;
@@ -105,6 +119,16 @@ public class PlayerAimManager : MonoBehaviour
             {
                 indicator.transform.position = futurePosition;
             }
+        }
+    }
+
+    void SetIndicatorsOpacity(float opacityRatio)
+    {
+        foreach (var indicatorRenderer in _indicatorRenderers)
+        {
+            var spriteColor = indicatorRenderer.color;
+            spriteColor.a = opacityRatio;
+            indicatorRenderer.color = spriteColor;
         }
     }
     
