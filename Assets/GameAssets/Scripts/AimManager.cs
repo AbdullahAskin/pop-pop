@@ -5,7 +5,7 @@ using Lean.Touch;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
-public class PlayerAimManager : MonoBehaviour
+public class AimManager : MonoBehaviour
 {
     [SerializeField] private Sprite indicatorSprite;
     
@@ -25,7 +25,7 @@ public class PlayerAimManager : MonoBehaviour
     private readonly List<SpriteRenderer> _indicatorRenderers = new List<SpriteRenderer>();
     private Player _player;
     
-    private PlayerAimManager()
+    private AimManager()
     {
         Instance = this;
     }
@@ -132,6 +132,6 @@ public class PlayerAimManager : MonoBehaviour
         }
     }
     
-    public static PlayerAimManager Instance { get; private set; }
+    public static AimManager Instance { get; private set; }
 
 }

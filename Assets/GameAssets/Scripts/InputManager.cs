@@ -27,17 +27,18 @@ public class InputManager : MonoBehaviour
     
     private void OnFingerDown(LeanFinger finger)
     {
-        PlayerAimManager.Instance.ToggleIndicators(true);
+       
+        AimManager.Instance.ToggleIndicators(true);
     }
     
     private void OnFingerUp(LeanFinger finger)
     {   
-        PlayerAimManager.Instance.ToggleIndicators(false);
+        AimManager.Instance.ToggleIndicators(false);
     }
     
     private void OnFingerUpdate(LeanFinger finger)
     {
-        PlayerAimManager.Instance.StepAimGuide(finger);
+        AimManager.Instance.StepAimGuide(finger);
     }
     
     

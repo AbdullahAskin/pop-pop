@@ -6,7 +6,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: char-idle_00
+  m_Name: test_char-idle_00
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: explosion
