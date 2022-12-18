@@ -20,10 +20,8 @@ public class AimManager : MonoBehaviour
     
     [SerializeField] private float minForce;
     [SerializeField] private float maxForce;
-    [SerializeField] private float screenRateMaxForce;
-    
+
     private readonly List<SpriteRenderer> _indicatorRenderers = new List<SpriteRenderer>();
-    private Player _player;
     
     private AimManager()
     {
@@ -31,9 +29,7 @@ public class AimManager : MonoBehaviour
     }
 
     private void Start()
-    {
-        _player = FindObjectOfType<Player>();
-        
+    {        
         CreateIndicators();
     }
     
@@ -68,11 +64,8 @@ public class AimManager : MonoBehaviour
         }
     }
 
-    public void StepAimGuide(LeanFinger finger)
-    {
-        var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
-        var fingerForceRatio = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * screenRateMaxForce), 0, 1);
-        
+    public void StepAimGuide(Vector2 fingerDir, float fingerForceRatio)
+    {   
         // Set indicators opacity
         if (fingerForceRatio < maxIndicatorOpacityRate)
         {
@@ -89,10 +82,10 @@ public class AimManager : MonoBehaviour
         }
         
         // Predict indicator positions
-        var currentPlayerPos = (Vector2)_player.transform.position;
-        
+        var currentPlayerPos = (Vector2)GameManager.Instance.currentPlayer.transform.position;
+
         var forceMagnitude = minForce + (maxForce - minForce) * fingerForceRatio;
-        var force = -fingerDeltaPos.normalized * forceMagnitude;
+        var force = -fingerDir * forceMagnitude;
 
         for (var index = 0; index < _indicatorRenderers.Count; index++)
         {
