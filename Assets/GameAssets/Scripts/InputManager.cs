@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    [SerializeField] private float screenRateMaxForce;
+    [SerializeField] private float minInputRateForAimAssistance;
+    [SerializeField] private float maximumForceCap;
+    
+    private PlayerAnimation _playerAnimation;
 
     private void Start()
     {
+        _playerAnimation = GameManager.Instance.currentPlayer.animation;
+        
         ToggleInput(true);
     }
-
+    
     public void ToggleInput(bool bind)
     {
         if (bind)
@@ -30,23 +35,23 @@ public class InputManager : MonoBehaviour
     private void OnFingerDown(LeanFinger finger)
     {  
         AimManager.Instance.ToggleIndicators(true);
-        GameManager.Instance.currentPlayer.animation.TogglePrepForJump(true);
     }
     
     private void OnFingerUp(LeanFinger finger)
     {   
         AimManager.Instance.ToggleIndicators(false);
-        GameManager.Instance.currentPlayer.animation.TogglePrepForJump(false);
+        _playerAnimation.TogglePrepForJump(false);
     }
     
     private void OnFingerUpdate(LeanFinger finger)
     {
         var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
-        var fingerForceRatio = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * screenRateMaxForce), 0, 1);
+        var inputRate = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * maximumForceCap), 0, 1);
+        if (inputRate < minInputRateForAimAssistance) return;
 
-        AimManager.Instance.StepAimGuide(fingerDeltaPos.normalized, fingerForceRatio);
-        GameManager.Instance.currentPlayer.animation.UpdatePrepForJump(fingerForceRatio);
+        var normalizedInputRate = (inputRate - minInputRateForAimAssistance) / (1f - minInputRateForAimAssistance);
+
+        AimManager.Instance.StepAimGuide(fingerDeltaPos.normalized, normalizedInputRate);
+        GameManager.Instance.currentPlayer.animation.UpdatePrepForJump(normalizedInputRate);
     }
-    
-    
 }

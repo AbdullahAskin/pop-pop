@@ -11,9 +11,8 @@ public class AimManager : MonoBehaviour
     
     [SerializeField] private float minIndicatorScale;
     [SerializeField] private float maxIndicatorScale;
-    
-    [SerializeField] private float minIndicatorOpacityRate;
-    [SerializeField] private float maxIndicatorOpacityRate;
+
+    [SerializeField] private float indicatorTransparencyChangeRate;
 
     [SerializeField] private int indicatorCount;
     [SerializeField] private float indicatorTimeInterval;
@@ -62,69 +61,69 @@ public class AimManager : MonoBehaviour
         {
             indicatorRenderer.enabled = bind;
         }
-    }
-
-    public void StepAimGuide(Vector2 fingerDir, float fingerForceRatio)
-    {   
-        // Set indicators opacity
-        if (fingerForceRatio < maxIndicatorOpacityRate)
-        {
-            var opacityRatio =
-                Mathf.Clamp(fingerForceRatio - minIndicatorOpacityRate, .0f,
-                    maxIndicatorOpacityRate - minIndicatorOpacityRate) /
-                (maxIndicatorOpacityRate - minIndicatorOpacityRate);
-
-            SetIndicatorsOpacity(opacityRatio);
-        }
-        else
-        {
-            SetIndicatorsOpacity(1);
-        }
         
-        // Predict indicator positions
-        var currentPlayerPos = (Vector2)GameManager.Instance.currentPlayer.transform.position;
-
-        var forceMagnitude = minForce + (maxForce - minForce) * fingerForceRatio;
-        var force = -fingerDir * forceMagnitude;
-
-        for (var index = 0; index < _indicatorRenderers.Count; index++)
-        {
-            var indicator = _indicatorRenderers[index];
-            
-            var time = (index + 1.5f) * indicatorTimeInterval;
-
-            var spaceVelocity = force * Time.fixedDeltaTime;
-            var finalVelocity = spaceVelocity + Physics2D.gravity * time;
-            var futurePosition = finalVelocity * time + currentPlayerPos;
-
-            // Out of screen indicator reflection 
-            var screenPos = Camera.main.WorldToScreenPoint(futurePosition);
-            if (screenPos.x < 0)
-            {
-                indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(-screenPos.x, screenPos.y));
-            }
-            else if (screenPos.x > Screen.width)
-            {
-                var reflectedScreenPosX = Screen.width - (screenPos.x - Screen.width);
-                indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(reflectedScreenPosX, screenPos.y));
-            }
-            else
-            {
-                indicator.transform.position = futurePosition;
-            }
-        }
+        SetIndicatorsOpacity(0);
     }
 
-    void SetIndicatorsOpacity(float opacityRatio)
+public void StepAimGuide(Vector2 fingerDir, float inputRate)
+{   
+    SetIndicatorsOpacity(inputRate);
+
+    var currentPlayerPos = (Vector2)GameManager.Instance.currentPlayer.transform.position;
+    var force = CalculateForce(fingerDir, inputRate);
+
+    for (var index = 0; index < _indicatorRenderers.Count; index++)
     {
-        foreach (var indicatorRenderer in _indicatorRenderers)
-        {
-            var spriteColor = indicatorRenderer.color;
-            spriteColor.a = opacityRatio;
-            indicatorRenderer.color = spriteColor;
-        }
+        Renderer indicator = _indicatorRenderers[index];
+        var futurePosition = CalculateFuturePosition(index, currentPlayerPos, force);
+        ReflectOffScreen(indicator, futurePosition);
     }
-    
-    public static AimManager Instance { get; private set; }
+}
+
+void SetIndicatorsOpacity(float inputRate)
+{
+    var opacityRatio = Mathf.Clamp(inputRate / indicatorTransparencyChangeRate, 0, 1);
+
+    foreach (var indicatorRenderer in _indicatorRenderers)
+    {
+        var spriteColor = indicatorRenderer.color;
+        spriteColor.a = opacityRatio;
+        indicatorRenderer.color = spriteColor;
+    }
+}
+
+Vector2 CalculateForce(Vector2 fingerDir, float inputRate)
+{
+    var forceMagnitude = minForce + (maxForce - minForce) * inputRate;
+    return -fingerDir * forceMagnitude;
+}
+
+Vector2 CalculateFuturePosition(int index, Vector2 currentPlayerPos, Vector2 force)
+{
+    float time = (index + 1.5f) * indicatorTimeInterval;
+    Vector2 spaceVelocity = force * Time.fixedDeltaTime;
+    Vector2 finalVelocity = spaceVelocity + Physics2D.gravity * time;
+    return finalVelocity * time + currentPlayerPos;
+}
+
+void ReflectOffScreen(Component indicator, Vector2 futurePosition)
+{
+    Vector2 screenPos = Camera.main.WorldToScreenPoint(futurePosition);
+    if (screenPos.x < 0)
+    {
+        indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(-screenPos.x, screenPos.y));
+    }
+    else if (screenPos.x > Screen.width)
+    {
+        var reflectedScreenPosX = Screen.width - (screenPos.x - Screen.width);
+        indicator.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(new Vector2(reflectedScreenPosX, screenPos.y));
+    }
+    else
+    {
+        indicator.transform.position = futurePosition;
+    }
+}
+
+public static AimManager Instance { get; private set; }
 
 }

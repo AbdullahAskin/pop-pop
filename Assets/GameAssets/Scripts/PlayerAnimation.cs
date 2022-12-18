@@ -6,26 +6,28 @@ public class PlayerAnimation : MonoBehaviour
 {
     private Animator animator;
 
-    [SpineAnimation]
-    [SerializeField] private string prepareForJumpAnimation;
+    private static readonly int PrepForJump = Animator.StringToHash("trigger");
 
-    void Start()
+    private void Start()
     {
         animator = GetComponentInChildren<Animator>();
     }
 
     public void TogglePrepForJump(bool state)
     {
-        animator.SetBool(prepareForJumpAnimation, state);
+        animator.SetBool(PrepForJump, state);
     }
 
-
-    public void UpdatePrepForJump(float ratio)
+    public void UpdatePrepForJump(float normalizedInputRate)
     {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.shortNameHash != Animator.StringToHash(prepareForJumpAnimation)) return;
-
-        var lerpedValue = Mathf.Lerp(stateInfo.normalizedTime, ratio, .15f);
-        animator.Play(stateInfo.shortNameHash, 0, lerpedValue);
+        var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.shortNameHash != PrepForJump)
+        {
+            TogglePrepForJump(true);
+            return;
+        }
+        
+        var currentRatio = Mathf.Lerp(stateInfo.normalizedTime, normalizedInputRate, .15f);
+        animator.Play(stateInfo.shortNameHash, 0, currentRatio);
     }
 }
