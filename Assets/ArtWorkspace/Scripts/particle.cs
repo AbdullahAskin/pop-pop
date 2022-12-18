@@ -21,7 +21,8 @@ public class particle : MonoBehaviour
     void Start()
     {
         alpha = 1;
-        Invoke("fadeOut", 2f);
+        float rndFade = Random.Range(1f, 2f);
+        Invoke("fadeOut", rndFade);
         randomScale = Random.Range(minRandom, maxRandom);
         transform.localScale = new Vector3(randomScale,randomScale,randomScale);
         rb = GetComponent<Rigidbody2D>();
@@ -46,7 +47,7 @@ public class particle : MonoBehaviour
     }
     void fadeOut()
     {
-        //DOTween.To(x => alpha = x, alpha, 0 ,0.4f);
+        DOTween.To(x => alpha = x, alpha, 0 ,0.2f);
     }
     
 }
