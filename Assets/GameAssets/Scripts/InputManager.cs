@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    [SerializeField] private float minInputRateForAimAssistance;
+    [SerializeField] private float maximumForceCap;
+    
+    private PlayerAnimation _playerAnimation;
+
     private void Start()
     {
+        _playerAnimation = GameManager.Instance.currentPlayer.animation;
+        
         ToggleInput(true);
     }
-
+    
     public void ToggleInput(bool bind)
     {
         if (bind)
@@ -26,19 +33,25 @@ public class InputManager : MonoBehaviour
     }
     
     private void OnFingerDown(LeanFinger finger)
-    {
-        PlayerAimManager.Instance.ToggleIndicators(true);
+    {  
+        AimManager.Instance.ToggleIndicators(true);
     }
     
     private void OnFingerUp(LeanFinger finger)
     {   
-        PlayerAimManager.Instance.ToggleIndicators(false);
+        AimManager.Instance.ToggleIndicators(false);
+        _playerAnimation.TogglePrepForJump(false);
     }
     
     private void OnFingerUpdate(LeanFinger finger)
     {
-        PlayerAimManager.Instance.StepAimGuide(finger);
+        var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
+        var inputRate = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * maximumForceCap), 0, 1);
+        if (inputRate < minInputRateForAimAssistance) return;
+
+        var normalizedInputRate = (inputRate - minInputRateForAimAssistance) / (1f - minInputRateForAimAssistance);
+
+        AimManager.Instance.StepAimGuide(fingerDeltaPos.normalized, normalizedInputRate);
+        GameManager.Instance.currentPlayer.animation.UpdatePrepForJump(normalizedInputRate);
     }
-    
-    
 }
