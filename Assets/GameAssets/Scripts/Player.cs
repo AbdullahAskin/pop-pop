@@ -1,13 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] public PlayerAnimation animation;
+    [NonSerialized] public PlayerAnimation Animation;
+    
+    private Rigidbody2D _rb;
 
     private void Awake()
     {
-        animation = GetComponent<PlayerAnimation>();
+        Animation = GetComponent<PlayerAnimation>();
+
+        _rb = GetComponent<Rigidbody2D>();
+    }
+
+    public void Throw(Vector2 force)
+    {
+        Animation.TriggerSpin();
+        
+        _rb.AddForce(force);
     }
 }
