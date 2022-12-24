@@ -8,6 +8,7 @@ public class Explosion : MonoBehaviour
     public CameraShake cameraShake;
     public GameObject particle;
     public GameObject smoke;
+    public GameObject boneSpawner;
 
     public float fieldofImpact;
     public float force;
@@ -15,6 +16,7 @@ public class Explosion : MonoBehaviour
     public float animDuration;
 
     private Animator myAnimator;
+
 
     // Start is called before the first frame update
     void Start()
@@ -42,11 +44,15 @@ public class Explosion : MonoBehaviour
 
         foreach (Collider2D obj in objects)
         {
-            Vector2 direction = obj.transform.position - transform.position;
-            obj.GetComponent<Rigidbody2D>().AddForce(direction * force);
-            if(obj.tag == "box")
+            if(obj.tag == "enemy")
             {
-                //Box explosion
+                Instantiate(boneSpawner, obj.transform.position, Quaternion.identity);
+                Destroy(obj.gameObject);
+            }
+            else
+            {
+                Vector2 direction = obj.transform.position - transform.position;
+                obj.GetComponent<Rigidbody2D>().AddForce(direction * force);
             }
         }
     }

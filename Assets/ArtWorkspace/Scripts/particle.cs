@@ -17,6 +17,8 @@ public class particle : MonoBehaviour
     float alpha;
     int randomColorIndex;
 
+    public float minXForce, maxXForce, minYForce, maxYForce, torqueForce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,9 +29,9 @@ public class particle : MonoBehaviour
         transform.localScale = new Vector3(randomScale,randomScale,randomScale);
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        rb.AddTorque(1f);
-        randomX = Random.Range(-22f,22f);
-        randomY = Random.Range(-22f, 22f);
+        rb.AddTorque(torqueForce);
+        randomX = Random.Range(minXForce, maxXForce);
+        randomY = Random.Range(minYForce, maxYForce);
         Throw();
         randomColorIndex = Random.Range(0, 3);
         sr.color = particleColors[randomColorIndex];
@@ -47,7 +49,7 @@ public class particle : MonoBehaviour
     }
     void fadeOut()
     {
-        DOTween.To(x => alpha = x, alpha, 0 ,0.2f);
+        //DOTween.To(x => alpha = x, alpha, 0 ,0.2f);
     }
     
 }

@@ -490,7 +490,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c98a4809b85e324ab47f74e82c4c436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenRateMaxForce: 0.55
+  minInputRateForAimAssistance: 0.3
+  maximumForceCap: 0.55
 --- !u!1 &274604118
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,7 +551,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4222e8aba34344f7899fb8e193e87ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prepareForJumpAnimation: trigger
 --- !u!1 &733359181
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,8 +1081,7 @@ MonoBehaviour:
   indicatorSprite: {fileID: 21300000, guid: 9150d7e95bbb6664f9003b200188f544, type: 3}
   minIndicatorScale: 0.05
   maxIndicatorScale: 0.075
-  minIndicatorOpacityRate: 0.3
-  maxIndicatorOpacityRate: 0.35
+  indicatorTransparencyChangeRate: 0.05
   indicatorCount: 10
   indicatorTimeInterval: 0.05
   minForce: 200
