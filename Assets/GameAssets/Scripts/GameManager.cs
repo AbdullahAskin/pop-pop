@@ -1,16 +1,14 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [NonSerialized] public Player CurrentPlayer;
-    
-    public float minForce;
-    public float maxForce;
-
+    [HideInInspector] public Player currentPlayer;
+    // Start is called before the first frame update
     void Awake()
     {
-        CurrentPlayer = FindObjectOfType<Player>();
+        currentPlayer = FindObjectOfType<Player>();
     }
 
     private GameManager()
