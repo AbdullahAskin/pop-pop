@@ -18,5 +18,6 @@ public class Player : MonoBehaviour
         animation.ToggleSpin(true);
         
         _rb.AddForce(force);
+        print(force);
     }
 }

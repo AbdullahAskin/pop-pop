@@ -7,13 +7,14 @@ using Vector2 = UnityEngine.Vector2;
 
 public class AimManager : MonoBehaviour
 {
+    [Header("Indicator Settings")]
     [SerializeField] private Sprite indicatorSprite;
     
     [SerializeField] private float minIndicatorScale;
     [SerializeField] private float maxIndicatorScale;
 
     [SerializeField] private float indicatorTransparencyChangeRate;
-
+    
     [SerializeField] private int indicatorCount;
     [SerializeField] private float indicatorTimeInterval;
 
@@ -90,9 +91,9 @@ void SetIndicatorsOpacity(float inputRate)
 
 Vector2 CalculateFuturePosition(int index, Vector2 currentPlayerPos, Vector2 force)
 {
-    float time = (index + 1.5f) * indicatorTimeInterval;
-    Vector2 spaceVelocity = force * Time.fixedDeltaTime;
-    Vector2 finalVelocity = spaceVelocity + Physics2D.gravity * time;
+    var time = (index + 1.5f) * indicatorTimeInterval;
+    var spaceVelocity = force * Time.fixedDeltaTime;
+    var finalVelocity = spaceVelocity + Physics2D.gravity * time;
     return finalVelocity * time + currentPlayerPos;
 }
 
