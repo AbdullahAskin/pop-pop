@@ -492,8 +492,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minInputRateForAimAssistance: 0.3
   maximumForceCap: 0.55
-  minForce: 150
-  maxForce: 400
+  minForce: 100
+  maxForce: 300
 --- !u!1 &274604118
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,7 +506,6 @@ GameObject:
   - component: {fileID: 274604120}
   - component: {fileID: 274604121}
   - component: {fileID: 274604123}
-  - component: {fileID: 274604122}
   - component: {fileID: 274604124}
   m_Layer: 0
   m_Name: Player
@@ -555,32 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4222e8aba34344f7899fb8e193e87ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!61 &274604122
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274604118}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!50 &274604123
 Rigidbody2D:
   serializedVersion: 4
@@ -615,9 +588,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.01, y: -0.04}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.39
 --- !u!1 &671499558
 GameObject:
   m_ObjectHideFlags: 0
