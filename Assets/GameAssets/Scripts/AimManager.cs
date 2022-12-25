@@ -17,6 +17,7 @@ public class AimManager : MonoBehaviour
     
     [SerializeField] private int indicatorCount;
     [SerializeField] private float indicatorTimeInterval;
+    [SerializeField] private float indicatorStartTime;
 
     private readonly List<SpriteRenderer> _indicatorRenderers = new List<SpriteRenderer>();
     
@@ -72,12 +73,13 @@ public void StepAimGuide(Vector2 force, float normalizedInputRate)
     for (var index = 0; index < _indicatorRenderers.Count; index++)
     {
         Renderer indicator = _indicatorRenderers[index];
-        var futurePosition = CalculateFuturePosition(index, currentPlayerPos, force);
+        var passedTime = index * indicatorTimeInterval + indicatorStartTime;
+        var futurePosition = CalculateFuturePosition(currentPlayerPos, force, passedTime);
         ReflectOffScreen(indicator, futurePosition);
     }
 }
 
-void SetIndicatorsOpacity(float inputRate)
+private void SetIndicatorsOpacity(float inputRate)
 {
     var opacityRatio = Mathf.Clamp(inputRate / indicatorTransparencyChangeRate, 0, 1);
 
@@ -89,15 +91,14 @@ void SetIndicatorsOpacity(float inputRate)
     }
 }
 
-Vector2 CalculateFuturePosition(int index, Vector2 currentPlayerPos, Vector2 force)
+private Vector2 CalculateFuturePosition(Vector2 initialPosition, Vector2 force, float time)
 {
-    var time = (index + 1.5f) * indicatorTimeInterval;
     var spaceVelocity = force * Time.fixedDeltaTime;
-    var finalVelocity = spaceVelocity + Physics2D.gravity * time;
-    return finalVelocity * time + currentPlayerPos;
+    var relativePosition = spaceVelocity * time + .5f * Physics2D.gravity * time * time;
+    return initialPosition + relativePosition;
 }
 
-void ReflectOffScreen(Component indicator, Vector2 futurePosition)
+private void ReflectOffScreen(Component indicator, Vector2 futurePosition)
 {
     Vector2 screenPos = Camera.main.WorldToScreenPoint(futurePosition);
     if (screenPos.x < 0)

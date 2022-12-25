@@ -43,7 +43,7 @@ public class InputManager : MonoBehaviour
     private void OnFingerUp(LeanFinger finger)
     {   
         AimManager.Instance.ToggleIndicators(false);
-        GameManager.Instance.currentPlayer.animation.TogglePrepForJump(false);
+        GameManager.Instance.currentPlayer.Animation.TogglePrepForJump(false);
 
         if (_active)
         {
@@ -64,6 +64,6 @@ public class InputManager : MonoBehaviour
         _force = -fingerDeltaPos.normalized * forceMagnitude;
 
         AimManager.Instance.StepAimGuide(_force, normalizedInputRate);
-        GameManager.Instance.currentPlayer.animation.UpdatePrepForJump(normalizedInputRate);
+        GameManager.Instance.currentPlayer.Animation.UpdatePrepForJump(normalizedInputRate);
     }
 }

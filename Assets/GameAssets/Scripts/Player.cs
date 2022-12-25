@@ -3,21 +3,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [NonSerialized] public new PlayerAnimation animation;
+    [NonSerialized] public PlayerAnimation Animation;
     
     private Rigidbody2D _rb;
 
     private void Awake()
     {
-        animation = GetComponent<PlayerAnimation>();
+        Animation = GetComponent<PlayerAnimation>();
         _rb = GetComponent<Rigidbody2D>();
     }
     
     public void Throw(Vector2 force)
     {
-        animation.ToggleSpin(true);
+        Animation.ToggleSpin(true);
         
         _rb.AddForce(force);
-        print(force);
     }
 }
