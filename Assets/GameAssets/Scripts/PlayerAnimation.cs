@@ -7,6 +7,7 @@ public class PlayerAnimation : MonoBehaviour
     private Animator animator;
 
     private static readonly int PrepForJump = Animator.StringToHash("trigger");
+    private static readonly int SpinStatus = Animator.StringToHash("spinStatus");
     private static readonly int Spin = Animator.StringToHash("spin");
 
     private void Start()
@@ -34,6 +35,11 @@ public class PlayerAnimation : MonoBehaviour
 
     public void ToggleSpin(bool status)
     {
-        animator.SetBool(Spin, status);
+        animator.SetBool(SpinStatus, status);
+        
+        if (status)
+        {
+            animator.SetTrigger(Spin);    
+        }
     }
 }

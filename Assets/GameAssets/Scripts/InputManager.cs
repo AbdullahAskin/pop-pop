@@ -47,7 +47,7 @@ public class InputManager : MonoBehaviour
 
         if (_active)
         {
-            // animation trigger
+            GameManager.Instance.currentPlayer.Throw(_force);   
         }
     }
     
