@@ -167,13 +167,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d40cb082e2f489f92389c278dd03e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraShake: {fileID: 5716495146168559580, guid: 510a77e2d298047ecbe223e15a5b081b, type: 3}
   particle: {fileID: 6883584422729994039, guid: bcef6bb30e777481a9f9fb0d67364781, type: 3}
   smoke: {fileID: 2114835983228341840, guid: 04aca1f250bc143db97f1b95fb00e9ab, type: 3}
   boneSpawner: {fileID: 8068192109101364250, guid: 903cbefaef7db413d8275e71b9c27cab, type: 3}
-  fieldofImpact: 4
+  fieldofImpact: 3
   force: 1000
   LayerToHit:
     serializedVersion: 2
     m_Bits: 64
   animDuration: 0.2
+  _button: {fileID: 0}

@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraShake : MonoBehaviour
 {
+    public static bool _btnEx;
 
+    private void Start()
+    {
+        _btnEx = false;
+    }
     public IEnumerator Shake (float duration , float magnitude)
     {
         Vector3 originalPos = transform.localPosition;
@@ -24,5 +30,16 @@ public class CameraShake : MonoBehaviour
         }
 
         transform.localPosition = originalPos;
+    }
+
+    public void btn_EXPLOSION()
+    {
+        _btnEx = true;
+    }
+    public void btn_RESTART()
+    {
+        Scene scene;
+        scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }

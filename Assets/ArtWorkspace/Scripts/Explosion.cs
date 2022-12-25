@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Explosion : MonoBehaviour
 {
-    public CameraShake cameraShake;
+    private CameraShake cameraShake;
     public GameObject particle;
     public GameObject smoke;
     public GameObject boneSpawner;
@@ -17,20 +18,25 @@ public class Explosion : MonoBehaviour
 
     private Animator myAnimator;
 
+    public Button _button; 
+
 
     // Start is called before the first frame update
     void Start()
     {
         myAnimator = transform.GetComponent<Animator>();
+        cameraShake = Camera.main.GetComponent<CameraShake>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) || CameraShake._btnEx)
         {
             myAnimator.SetBool("explosion", true);
+            CameraShake._btnEx = false;
             StartCoroutine(wait());
+
         }
         if(Input.GetKeyDown(KeyCode.R))
         {
@@ -78,6 +84,7 @@ public class Explosion : MonoBehaviour
         Instantiate(particle, transform.position, Quaternion.identity);
         Instantiate(smoke, transform.position, Quaternion.identity);
         StartCoroutine(cameraShake.Shake(.1f, 0.1f));
-        Destroy(gameObject);
+        this.gameObject.GetComponent<Collider2D>().enabled = false;
+        Destroy(gameObject, 1f);
     }
 }
