@@ -1,13 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] public PlayerAnimation animation;
+    [NonSerialized] public new PlayerAnimation animation;
 
     private void Awake()
     {
         animation = GetComponent<PlayerAnimation>();
+    }
+    
+    public void Spin()
+    {
+        animation.ToggleSpin(true);
+        
+        //throw
     }
 }

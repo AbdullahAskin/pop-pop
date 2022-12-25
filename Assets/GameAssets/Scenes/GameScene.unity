@@ -492,6 +492,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minInputRateForAimAssistance: 0.3
   maximumForceCap: 0.55
+  minForce: 200
+  maxForce: 700
 --- !u!1 &274604118
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +540,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 576c25e631f7a604aa369caaa800f8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
 --- !u!114 &274604121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1084,8 +1085,6 @@ MonoBehaviour:
   indicatorTransparencyChangeRate: 0.05
   indicatorCount: 10
   indicatorTimeInterval: 0.05
-  minForce: 200
-  maxForce: 700
 --- !u!1 &1927574066
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,9 +16,6 @@ public class AimManager : MonoBehaviour
 
     [SerializeField] private int indicatorCount;
     [SerializeField] private float indicatorTimeInterval;
-    
-    [SerializeField] private float minForce;
-    [SerializeField] private float maxForce;
 
     private readonly List<SpriteRenderer> _indicatorRenderers = new List<SpriteRenderer>();
     
@@ -65,12 +62,11 @@ public class AimManager : MonoBehaviour
         SetIndicatorsOpacity(0);
     }
 
-public void StepAimGuide(Vector2 fingerDir, float inputRate)
+public void StepAimGuide(Vector2 force, float normalizedInputRate)
 {   
-    SetIndicatorsOpacity(inputRate);
+    SetIndicatorsOpacity(normalizedInputRate);
 
     var currentPlayerPos = (Vector2)GameManager.Instance.currentPlayer.transform.position;
-    var force = CalculateForce(fingerDir, inputRate);
 
     for (var index = 0; index < _indicatorRenderers.Count; index++)
     {
@@ -90,12 +86,6 @@ void SetIndicatorsOpacity(float inputRate)
         spriteColor.a = opacityRatio;
         indicatorRenderer.color = spriteColor;
     }
-}
-
-Vector2 CalculateForce(Vector2 fingerDir, float inputRate)
-{
-    var forceMagnitude = minForce + (maxForce - minForce) * inputRate;
-    return -fingerDir * forceMagnitude;
 }
 
 Vector2 CalculateFuturePosition(int index, Vector2 currentPlayerPos, Vector2 force)

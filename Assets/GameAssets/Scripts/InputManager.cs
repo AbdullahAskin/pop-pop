@@ -6,13 +6,16 @@ public class InputManager : MonoBehaviour
 {
     [SerializeField] private float minInputRateForAimAssistance;
     [SerializeField] private float maximumForceCap;
-    
-    private PlayerAnimation _playerAnimation;
+
+    [Header("Force Limits")]
+    [SerializeField] private float minForce;
+    [SerializeField] private float maxForce;
+
+    private Vector2 _force;
+    private bool _active; 
 
     private void Start()
     {
-        _playerAnimation = GameManager.Instance.currentPlayer.animation;
-        
         ToggleInput(true);
     }
     
@@ -40,18 +43,27 @@ public class InputManager : MonoBehaviour
     private void OnFingerUp(LeanFinger finger)
     {   
         AimManager.Instance.ToggleIndicators(false);
-        _playerAnimation.TogglePrepForJump(false);
+        GameManager.Instance.currentPlayer.animation.TogglePrepForJump(false);
+
+        if (_active)
+        {
+            // animation trigger
+        }
     }
     
     private void OnFingerUpdate(LeanFinger finger)
     {
         var fingerDeltaPos = finger.ScreenPosition - finger.StartScreenPosition;
         var inputRate = Mathf.Clamp(fingerDeltaPos.magnitude / (Screen.width * maximumForceCap), 0, 1);
-        if (inputRate < minInputRateForAimAssistance) return;
+
+        _active = inputRate >= minInputRateForAimAssistance;
+        if (!_active) return;
 
         var normalizedInputRate = (inputRate - minInputRateForAimAssistance) / (1f - minInputRateForAimAssistance);
+        var forceMagnitude = minForce + (maxForce - minForce) * normalizedInputRate;
+        _force = -fingerDeltaPos.normalized * forceMagnitude;
 
-        AimManager.Instance.StepAimGuide(fingerDeltaPos.normalized, normalizedInputRate);
+        AimManager.Instance.StepAimGuide(_force, normalizedInputRate);
         GameManager.Instance.currentPlayer.animation.UpdatePrepForJump(normalizedInputRate);
     }
 }
